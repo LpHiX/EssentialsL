@@ -1,0 +1,8 @@
+name: EssentialsL
+version: '${project.version}'
+main: me.lphix.essentialsl.EssentialsL
+api-version: 1.18
+commands:
+  addpoints:
+    usage: /<command>
+    description: Add points
