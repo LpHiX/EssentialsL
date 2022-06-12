@@ -15,7 +15,16 @@ public class MySQL {
     private Connection connection;
 
     public boolean isConnected(){
-        return(connection!=null);
+        if(connection == null) {
+            return false;
+        } else {
+            try {
+                return !connection.isClosed();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
     public void connect() throws ClassNotFoundException, SQLException {
@@ -23,13 +32,15 @@ public class MySQL {
         connection = DriverManager.getConnection("jdbc:mysql://" +
                 host + ":" + port + "/" + database + "?userSSL=false", username, password);
     }
-    public void disconnect(){
-        if(!isConnected()) return;
+    public boolean disconnect(){
+        if(!isConnected()) return false;
         try {
             connection.close();
+            return true;
         } catch (SQLException e){
             e.printStackTrace();
         }
+        return false;
     }
     public Connection getConnection() {return connection;}
 }

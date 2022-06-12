@@ -11,15 +11,17 @@ import java.util.UUID;
 
 public class SQLGetter {
 
-    private EssentialsL plugin;
+    private final MySQL sql;
+    private final EssentialsL plugin;
     public SQLGetter(EssentialsL plugin){
         this.plugin = plugin;
+        this.sql = plugin.getSQL();
     }
 
     public void createTable() {
         PreparedStatement ps;
         try{
-            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS teststat "
+            ps = sql.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS teststat "
                     + "(NAME VARCHAR(100), UUID VARCHAR(100), POINTS INT(100), PRIMARY KEY (NAME))");
             ps.executeUpdate();
         } catch (SQLException e){
@@ -31,7 +33,7 @@ public class SQLGetter {
         try {
             UUID uuid = player.getUniqueId();
             if (!exists(uuid)){
-                PreparedStatement ps2 = plugin.SQL.getConnection().prepareStatement("INSERT IGNORE INTO teststat"
+                PreparedStatement ps2 = sql.getConnection().prepareStatement("INSERT IGNORE INTO teststat"
                         + " (NAME,UUID) VALUES (?,?)");
                 ps2.setString(1, player.getName());
                 ps2.setString(2, uuid.toString());
@@ -44,7 +46,7 @@ public class SQLGetter {
 
     public boolean exists(UUID uuid){
         try{
-            PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM teststat WHERE UUID=?");
+            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM teststat WHERE UUID=?");
             ps.setString(1, uuid.toString());
 
             ResultSet results = ps.executeQuery();
@@ -57,7 +59,7 @@ public class SQLGetter {
 
     public void addPoints(UUID uuid, int stat){
         try{
-            PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("UPDATE teststat SET POINTS =? WHERE UUID=?");
+            PreparedStatement ps = sql.getConnection().prepareStatement("UPDATE teststat SET POINTS =? WHERE UUID=?");
             ps.setInt(1, (getPoints(uuid) + stat));
             ps.setString(2, uuid.toString());
             ps.executeUpdate();
@@ -68,7 +70,7 @@ public class SQLGetter {
 
     public int getPoints(UUID uuid){
         try{
-            PreparedStatement ps = plugin.SQL.getConnection().prepareStatement("SELECT POINTS FROM teststat WHERE UUID=?");
+            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT POINTS FROM teststat WHERE UUID=?");
             ps.setString(1, uuid.toString());
             ResultSet rs = ps.executeQuery();
             int points = 0;

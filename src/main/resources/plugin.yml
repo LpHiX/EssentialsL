@@ -6,3 +6,6 @@ commands:
   addpoints:
     usage: /<command>
     description: Add points
+  database:
+    usage: /<command>
+    description: Admin database commands
